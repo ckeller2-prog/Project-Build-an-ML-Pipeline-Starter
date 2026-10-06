@@ -24,17 +24,18 @@ def go(config: DictConfig):
     active_steps = steps_par.split(",") if steps_par != "all" else _steps
 
     with tempfile.TemporaryDirectory() as tmp_dir:
-        _ = mlflow.run(
-            os.path.join(config['main']['components_repository'], "get_data"),
-            "main",
-            env_manager="local",
-            parameters={
-                "sample": config["etl"]["sample"],
-                "artifact_name": "sample.csv",
-                "artifact_type": "raw_data",
-                "artifact_description": "Raw file as downloaded"
-            },
-        )
+        if "download" in active_steps:
+            _ = mlflow.run(
+                os.path.join(config['main']['components_repository'], "get_data"),
+                "main",
+                env_manager="local",
+                parameters={
+                    "sample": config["etl"]["sample"],
+                    "artifact_name": "sample.csv",
+                    "artifact_type": "raw_data",
+                    "artifact_description": "Raw file as downloaded"
+                },
+            )
 
         if "basic_cleaning" in active_steps:
             _ = mlflow.run(
@@ -52,7 +53,18 @@ def go(config: DictConfig):
             )
 
         if "data_check" in active_steps:
-            pass
+            _ = mlflow.run(
+                "src/data_check",
+                "main",
+                env_manager="local",
+                parameters={
+                    "csv": "clean_sample.csv:latest",
+                    "ref": "clean_sample.csv:reference",
+                    "kl_threshold": config["data_check"]["kl_threshold"],
+                    "min_price": config["etl"]["min_price"],
+                    "max_price": config["etl"]["max_price"],
+                },
+            )
 
         if "data_split" in active_steps:
             pass
