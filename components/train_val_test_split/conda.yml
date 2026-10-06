@@ -1,0 +1,13 @@
+name: train_val_test_split
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.13.0
+  - pip=24.3.1
+  - requests=2.32.5
+  - scikit-learn=1.7.2
+  - pip:
+      - mlflow==3.3.2
+      - wandb==0.24.0
+      - -e ..
