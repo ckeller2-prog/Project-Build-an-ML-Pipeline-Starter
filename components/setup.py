@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -6,7 +6,8 @@ setup(
     version=0.1,
     description="Utilities for interacting with Weights and Biases and mlflow",
     zip_safe=False,  # avoid eggs, which make the handling of package data cumbersome
-    packages=["wandb_utils"],
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",

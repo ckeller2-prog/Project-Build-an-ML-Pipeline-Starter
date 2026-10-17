@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import argparse
-import logging
-import pathlib
+import logging 
+from pathlib import Path
 import pandas as pd
 import wandb
 
@@ -10,7 +10,6 @@ logger = logging.getLogger()
 
 
 def go(args):
-
     run = wandb.init(job_type="basic_cleaning")
     run.config.update(args)
 
@@ -31,7 +30,7 @@ def go(args):
     df = df[idx].copy()
 
     # Save the cleaned dataset locally
-    output_filename = "clean_sample.csv"
+    output_filename = args.output_artifact
     df.to_csv(output_filename, index=False)
 
     logger.info("Uploading cleaned dataset to Weights & Biases...")

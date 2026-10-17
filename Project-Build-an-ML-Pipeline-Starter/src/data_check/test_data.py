@@ -87,9 +87,18 @@ def test_similar_neigh_distrib(data: pd.DataFrame, ref_data: pd.DataFrame, kl_th
 # Implement here test_row_count and test_price_range   #
 ########################################################
 
-def test_row_count(data):
-    assert 15000 < data.shape[0] < 1000000
+def test_row_count(df, ref):
+    """Ensure the cleaned dataset has a valid row count compared to the reference dataset."""
+    assert len(df) > 0, "Dataset is empty"
+    # Allow a reasonable tolerance (e.g., between 50% and 150% of reference size)
+    assert len(df) >= 0.5 * len(ref), f"Dataset has too few rows: {len(df)} vs ref {len(ref)}"
+    assert len(df) <= 1.5 * len(ref), f"Dataset has too many rows: {len(df)} vs ref {len(ref)}"
 
-def test_price_range(data, min_price, max_price):
-    assert data["price"].between(min_price, max_price).all()
+
+def test_price_range(df, min_price, max_price):
+    """Ensure all prices fall within the specified min_price and max_price bounds."""
+    assert df["price"].between(min_price, max_price).all(), (
+        f"Found prices outside the allowed range [{min_price}, {max_price}]. "
+        f"Min price found: {df['price'].min()}, Max price found: {df['price'].max()}"
+    )
     
